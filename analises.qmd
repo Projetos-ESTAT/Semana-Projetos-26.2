@@ -1,79 +1,80 @@
 ---
 # Nome do arquivo PDF gerado na pasta resultado
-output-file: "Nome do alocado - análise 1 e 2"
+output-file: "Luísa Santos - Análises 1 e 2"
 ---
 
 ```{r setup}
-source("rdocs/analises.R")
+#| include: false
+source("rdocs/analise_errado.R")
 ```
-
-```{r}
-# Rodar apenas uma vez na vida!
-## Instalando o tinytex(pacote apenas)
-### CRAN version
-install.packages('tinytex')
-
-
-## Baixando o tinytex
-library(tinytex)
-tinytex::install_tinytex()
-```
-
-# Objetivo
-
-Esse template foi criado para o alocado conseguir observar como ficaria sua análise o arquivo principal. É daqui que o gerente de projetos irá copiar a análise e inserir no documento principal que gerará o relatório estatístico.
 
 # Análises
 
-## Análise 1
+## Distribuição do peso dos pintinhos
 
-## Análise 2
+Esta análise tem como objetivo apresentar a distribuição do peso dos pintinhos ao longo do experimento, variável quantitativa contínua medida em gramas. Para isso, foram utilizados um histograma e um quadro de medidas resumo, além do cálculo do coeficiente de variação, do coeficiente de assimetria e da curtose.
 
 ```{r}
-#| label: fig-
-#| fig-cap: "Gráfico "
+#| label: fig-hist-peso
+#| fig-cap: "Histograma do peso dos pintinhos"
 
-
-
+hist_peso
 ```
 
-
-::: {#quad- layout-align="center" quad-pos="H"}
 ```{=latex}
-
-
-
+% latex table generated in R 4.6.0 by xtable 1.8-8 package
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & media & mediana & dp & min & max \\
+  \hline
+1 & 121,82 & 103,00 & 71,07 & 35,00 & 373,00 \\
+   \hline
+\end{tabular}
+\caption{resumo peso}
+\end{table}
 ```
 
-Medidas resumo da 
-:::
+Pela \ref{fig-hist-peso}, nota-se que as medições se concentram nos menores pesos e que a frequência diminui à medida que o peso aumenta, formando uma cauda longa à direita. Cerca de 48,10% das medições foram de até 100,00 gramas, enquanto apenas 14,53% ultrapassaram 200,00 gramas. Esse comportamento é esperado, já que o banco reúne medições de todos os dias do experimento, incluindo os primeiros dias, em que os pintinhos ainda são pequenos.
 
+A Tabela 1 confirma esse comportamento. O peso médio dos pintinhos foi de 121,82 gramas, superior à mediana de 103,00 gramas, o que indica assimetria à direita, também evidenciada pelo coeficiente de assimetria de 0,96. Os pesos variaram de 35,00 a 373,00 gramas, e 50% das medições ficaram entre 63,00 e 163,75 gramas, valores do 1º e do 3º quartis, respectivamente. Além disso, o desvio padrão de 71,07 gramas resulta em um coeficiente de variação de 58,34%, bem acima de 25%, o que revela dados heterogêneos, ou seja, alta variabilidade dos pesos, e a curtose de 0,34 indica uma distribuição levemente leptocúrtica.
 
+Quanto aos valores fora do padrão, 9 medições, entre 318,00 e 373,00 gramas, ficaram acima do limite superior de 314,88 gramas e podem ser consideradas valores atípicos. Todas elas foram registradas entre os dias 18 e 21 e pertencem a apenas 5 pintinhos, correspondendo aos animais mais pesados ao final do experimento. Assim, conclui-se que o peso dos pintinhos variou bastante ao longo do experimento, com a maioria das medições em pesos baixos e poucos animais atingindo pesos elevados ao final do período.
 
-::: {#tbl-modalidades layout-align="center" tbl-pos="H"}
-```{=latex}
+## Peso dos pintinhos segundo a dieta
 
+Essa analize tem como objetivo compara o pezo dos pintinho entre as dieta, afim de identifica qual delas esta associada ao maior ganho de pezo. Foi utilizado as variavel pezo, quantitativa continua medida em grama, e dieta qualitativa nominal. Pra isso foi utilizado um boxplot e um quadro de medida resumo do pezo por dieta, alem do calculo do coeficiente de variaçao e do coeficiente de assimetria de cada dieta.
 
+```{r}
+#| label: fig-box-peso-dieta
+#| fig-cap: "Boxplot do peso dos pintinhos pela dieta"
+
+box_peso_dieta
 ```
 
+```{r}
+#| results: asis
 
-:::
+# Com dados agrupados, o print_quadro_resumo() precisa do ponto como separador
+# decimal (a vírgula aparece no PDF pelo siunitx do estat.cls); a largura das
+# colunas também é corrigida, como no quadro anterior
+options(OutDec = ".")
+quadro <- capture.output(
+  dados %>%
+    group_by(Diet) %>%
+    print_quadro_resumo(
+      weight,
+      title = "Medidas resumo do peso dos pintinhos (em gramas) por dieta",
+      label = "quad:peso_dieta"
+    )
+)
+options(OutDec = ",")
+cat(str_replace(quadro, "table-format = \\d+\\.2", "table-format = 4.2"), sep = "\n")
+```
 
+Pela \ref{fig-box-peso-dieta}, percebece que as mediana do pezo aumenta da Dieta 1 para a Dieta 4 com as caixa das Dietas 3 e 4 posicionada em patamares mas alto que as das Dieta 1 e 2. Em todas as dieta a média fica a cima da mediana indicando assimetria a direita, mais acentuada na Dieta 1 (coeficiente de assimetria de 1,07) e mais leve na Dieta 4 (0,40). Alem disso, apenas as Dietas 1 e 2 apresenta valor atípicos a cima do limite superior, com 4 e 2 medição respectivamente.
 
+O **Quadro** \ref{quad:peso_dieta} mostra que as Dieta 3 e 4 se destaca nas medidas de posiçao. A Dieta 3 apresento o maior pezo médio, de 142,95 gramas 39,26% a cima do observado na Dieta 1 (102,65 gramas), seguido pela Dieta 4 (135,26 gramas) e pela Dieta 2 (122,62 gramas). Já em relaçao a mediana a Dieta 4 apresentou o mas alto valor (129,50 gramas), próximo a da Dieta 3 (125,50 gramas), enquanto que a Dieta 1 teve a menor (88,00 gramas), ou seja metade das mediçoes da Dieta 1 ficaram abaixo de 88,00 gramas, enquanto nas Dieta 3 e 4 metade superaram 125,50 gramas.
 
-
-$\ref{fig-}$
-
-[@tbl-]
-
-
-[**Quadro** @quad-]
-
-
-
-
-
-
-
-
-
+Quanto a variabilidade, todas as dieta apresentou coeficientes de variaçao a cima de 50%, indicando pezos heterogênio dentro de cada grupo. A Dieta 4 foi a mais homogênia, com o menor coeficiente de variação (50,89%) e o maior 1º quartil (71,25 gramas), enquanto a Dieta 3 teve o maior desvio padrao (86,54 gramas), o maior coeficiente de variação (60,54%) e o maior 3º quartil (198,75 gramas) o que mostra que seus pintinho alcançou os maiores pezos, mas de forma menas uniforme. Por fim os peso mínimos foi praticamente igual entre as dietas (de 35,00 a 39,00 gramas), indicando que os pintinhos começou o esperimento com pezos semelhante e que as diferença surgiu ao longo do tempo. Assim conclui-se que as Dieta 3 e 4 esta associada aos maiores pezos dos pintinho, enquanto que a Dieta 1 esta associadas aos menor.
